@@ -2,8 +2,11 @@ import AppFormFeilds from "../../components/Form/AppFormFeilds";
 import AppFrom from "../../components/Form/AppForm";
 import { LoginSchema } from "../../validation";
 import { Button } from "react-daisyui";
+import { useSelector } from "react-redux";
 
 const Login = () => {
+  // const user = useSelector((state) => state.user.user);
+
   const loginUser = async (values) => {
     console.log(values);
   };
