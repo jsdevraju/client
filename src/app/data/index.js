@@ -8,8 +8,12 @@ export const MENU = [
         url: '/employee-create',
     },
     {
-        name: 'Departments',
+        name: 'Departments List',
         url: '/departments',
+    },
+    {
+        name: 'Create Department',
+        url: '/departments-create',
     },
 ]
 

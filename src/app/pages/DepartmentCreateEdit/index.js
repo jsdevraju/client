@@ -1,12 +1,11 @@
-import Navbar from "../../components/Navbar"
-import AppFrom from '../../components/Form/AppForm'
-import AppFormFeilds from '../../components/Form/AppFormFeilds'
+import Navbar from "../../components/Navbar";
+import AppFrom from "../../components/Form/AppForm";
+import AppFormFeilds from "../../components/Form/AppFormFeilds";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "react-daisyui";
 import { DepartmentSchema } from "../../validation";
 
 const DepartmentCreateEdit = () => {
-
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -19,7 +18,7 @@ const DepartmentCreateEdit = () => {
       <Navbar />
       <section className="sec">
         <div className="container">
-        <h1 className="font-semibold text-2xl mb-8">
+          <h1 className="font-semibold text-2xl mb-8">
             {id ? "Edit Employee" : "Create Employee"}
           </h1>
 
@@ -32,23 +31,7 @@ const DepartmentCreateEdit = () => {
             <AppFormFeilds
               className="app_input"
               name="name"
-              placeholder="First Name"
-            />
-            <AppFormFeilds
-              className="app_input"
-              name="surname"
-              placeholder="Last Name"
-            />
-            <AppFormFeilds
-              className="app_input"
-              name="email"
-              placeholder="Email"
-            />
-            <AppFormFeilds
-              className="app_input"
-              name="telephone"
-              placeholder="Telephone"
-              type="number"
+              placeholder="Name"
             />
             <div className="mt-4 flex flex-col justify-between w-full items-center gap-3 font-sans">
               <label className="font-semibold text-sm capitalize block w-full">
@@ -95,11 +78,10 @@ const DepartmentCreateEdit = () => {
               </Button>
             </div>
           </AppFrom>
-
         </div>
       </section>
     </>
-  )
-}
+  );
+};
 
-export default DepartmentCreateEdit
+export default DepartmentCreateEdit;
