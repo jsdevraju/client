@@ -4,6 +4,7 @@ import CreateEmployeeList from './app/pages/CreateEmployeeList'
 import EmployeeList from './app/pages/EmployeeList'
 import NotFound from "./app/pages/404";
 import Department from "./app/pages/Department";
+import DepartmentCreateEdit from "./app/pages/DepartmentCreateEdit";
 
 const App = () => {
   
@@ -15,7 +16,8 @@ const App = () => {
         <Route path="/employee-create" element={<CreateEmployeeList />} />
         <Route path="/employee-edit/:id" element={<CreateEmployeeList />} />
         <Route path="/departments" element={<Department />} />
-        <Route path="/create-/:id" element={<Department />} />
+        <Route path="/departments-create" element={<DepartmentCreateEdit />} />
+        <Route path="/departments-edit/:id" element={<DepartmentCreateEdit />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
