@@ -3,18 +3,20 @@ import { Button } from "react-daisyui";
 import { FaBars } from "react-icons/fa";
 import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MENU } from "../../data";
 import {useDispatch} from 'react-redux'
 import { logout } from "../../../store/userSlice";
 const Navbar = () => {
   const [menuShow, setMenuShow] = useState(false);
   const dispatch = useDispatch()
+  const navigator = useNavigate()
 
   const LogoutHandler = () => {
     localStorage.removeItem("user")
     localStorage.removeItem("token")
     dispatch(logout())
+    navigator("/")
 
   }
 

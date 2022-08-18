@@ -28,6 +28,7 @@ const DepartmentTable = ({ departmentList }) => {
                     </>
                   ) : undefined}
                 </span>
+                <span>{item.name}</span>
                 <span>{item.manager.firstName + item.manager.lastName}</span>
                 
                 <span

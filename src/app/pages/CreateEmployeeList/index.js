@@ -6,14 +6,44 @@ import AppFormFeilds from "../../components/Form/AppFormFeilds"
 import Navbar from "../../components/Navbar"
 import { EmployeeSchema } from "../../validation"
 import axios from "axios"
+
 const CreateEmployeeList = () => {
   const navigate = useNavigate()
   const { id } = useParams()
   const [isLoaded, setIsLoaded] = useState(false)
   const [managersList, setManagersList] = useState([])
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [email, setEmail] = useState("")
+  const [telephone, setTelephone] = useState("")
+  const [manager, setManager] = useState("")
+  const [status, setStatus] = useState("")
 
-  const createEmployee = async (values) => {
-    console.log(values)
+  const createEmployee = async (e) => {
+    e.preventDefault()
+
+    const data = {
+      firstName,
+      lastName,
+      email,
+      telephone,
+      manager,
+      status,
+    }
+
+    await axios.post(
+      `${process.env.REACT_APP_PUBLIC_MAIN_PROXY}/create-employee`,
+      { ...data },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    )
+    
+    navigate("/employee-list")
+
+    
   }
 
   useEffect(() => {
@@ -51,47 +81,61 @@ const CreateEmployeeList = () => {
             {id ? "Edit Employee" : "Create Employee"}
           </h1>
 
-          <AppFrom
-            className="flex flex-col justify-center items-center "
-            initialValues={{
-              firstName: "",
-              lastName: "",
-              email: "",
-              telephone: "",
-              manager: "",
-              status: "",
-            }}
+          <form
             onSubmit={createEmployee}
-            validationSchema={EmployeeSchema}
+            className="w-full flex flex-col items-center justify-center"
           >
-            <AppFormFeilds
-              className="app_input"
-              name="firstName"
-              placeholder="First Name"
-            />
-            <AppFormFeilds
-              className="app_input"
-              name="lastName"
-              placeholder="Last Name"
-            />
-            <AppFormFeilds
-              className="app_input"
-              name="email"
-              placeholder="Email"
-            />
-            <AppFormFeilds
-              className="app_input"
-              name="telephone"
-              placeholder="Telephone"
-              type="number"
-            />
-            <div className="mt-4 flex flex-col justify-between w-full items-center gap-3 font-sans">
+            <div className="w-full p-3 ">
+              <lable>First Name</lable>
+              <input
+                onChange={(e) => setFirstName(e.target.value)}
+                type="text"
+                name="firstName"
+                placeholder="Your First Name"
+                className="input input-bordered w-full"
+              />
+            </div>
+
+            <div className="w-full p-3 ">
+              <lable>Last Name</lable>
+              <input
+                onChange={(e) => setLastName(e.target.value)}
+                type="text"
+                name="lastName"
+                placeholder="Your Last Name"
+                className="input input-bordered w-full"
+              />
+            </div>
+
+            <div className="w-full p-3 ">
+              <lable>Email</lable>
+              <input
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                name="email"
+                placeholder="Your email address..."
+                className="input input-bordered w-full"
+              />
+            </div>
+
+            <div className="w-full p-3 ">
+              <lable>Telephone</lable>
+              <input
+                onChange={(e) => setTelephone(e.target.value)}
+                type="number"
+                name="telephone"
+                placeholder="Your telephone number..."
+                className="input input-bordered w-full"
+              />
+            </div>
+
+            <div className="w-full p-3 ">
               <label className="font-semibold text-sm capitalize block w-full">
                 Manger
               </label>
               <select
+                onChange={(e) => setManager(e.target.value)}
                 name="manager"
-                defaultValue={"--Select--"}
                 className="select focus:outline-offset-0 select-bordered w-full"
               >
                 {managersList.map((item, index) => (
@@ -102,32 +146,25 @@ const CreateEmployeeList = () => {
               </select>
             </div>
 
-            {/* When Edit  */}
-            {id && (
-              <div className="mt-4 flex flex-col justify-between w-full items-center gap-3 font-sans">
-                <label className="font-semibold text-sm capitalize block w-full">
-                  Status
-                </label>
-                <select
-                  name="status"
-                  defaultValue={"--Select--"}
-                  className="select focus:outline-offset-0 select-bordered w-full"
-                >
-                  <option disabled defaultValue={"--Select--"}>
-                    "--Select--"
-                  </option>
-                  <option value="active">Active</option>
-                  <option value="deactivate">Deactivate</option>
-                </select>
-              </div>
-            )}
-
-            <div className="flex justify-end items-center gap-4 mt-4">
-              <Button type="submit" color="success" className="text-white">
-                Save
-              </Button>
+            <div className="w-full p-3 ">
+              <label className="font-semibold text-sm capitalize block w-full">
+                Status
+              </label>
+              <select
+                disabled
+                onChange={(e) => setStatus(e.target.value)}
+                name="status"
+                className="select focus:outline-offset-0 select-bordered w-full"
+              >
+                <option value="Active">Active</option>
+                <option value="inActive">Deactive</option>
+              </select>
             </div>
-          </AppFrom>
+
+            <div className="w-full p-3 ">
+              <Button type="submit">Submit</Button>
+            </div>
+          </form>
         </div>
       </section>
     </>

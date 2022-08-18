@@ -1,20 +1,20 @@
 export const MENU = [
-    {
-        name: 'Employee List',
-        url: '/',
-    },
-    {
-        name: 'Create Employee',
-        url: '/employee-create',
-    },
-    {
-        name: 'Departments List',
-        url: '/departments',
-    },
-    {
-        name: 'Create Department',
-        url: '/departments-create',
-    },
+  {
+    name: "Employee List",
+    url: "/employee-list",
+  },
+  {
+    name: "Create Employee",
+    url: "/employee-create",
+  },
+  {
+    name: "Departments List",
+    url: "/departments",
+  },
+  {
+    name: "Create Department",
+    url: "/departments-create",
+  },
 ]
 
 export const SELECT = [
