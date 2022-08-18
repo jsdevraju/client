@@ -1,12 +1,46 @@
-import AppFormFeilds from "../../components/Form/AppFormFeilds";
-import AppFrom from "../../components/Form/AppForm";
-import { LoginSchema } from "../../validation";
-import { Button } from "react-daisyui";
+import AppFormFeilds from "../../components/Form/AppFormFeilds"
+import AppFrom from "../../components/Form/AppForm"
+import { LoginSchema } from "../../validation"
+import { Button } from "react-daisyui"
+import axios from "axios"
+import { toast } from "react-toastify"
+import { useDispatch } from "react-redux"
+import { login } from "../../../store/userSlice"
+import { useNavigate } from "react-router"
+import { useEffect, useState } from "react"
 
 const Login = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(false)
+
   const loginUser = async (values) => {
-    console.log(values);
-  };
+    try {
+      setIsLoading(true)
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_PUBLIC_MAIN_PROXY}/login`,
+        values
+      )
+
+      localStorage.setItem("user", JSON.stringify(data.user))
+      localStorage.setItem("token", data.token)
+      toast.success("Login Successful")
+      dispatch(login(data))
+      setIsLoading(false)
+
+      navigate("/employee-list")
+    } catch (error) {
+      setIsLoading(false)
+
+      toast.error(error.response.data.message || "something went wrong")
+    }
+  }
+
+  useEffect(() => {
+    if (localStorage.getItem("user")) {
+      navigate("/employee-list")
+    }
+  }, [navigate])
 
   return (
     <>
@@ -34,14 +68,18 @@ const Login = () => {
               placeholder="Password"
             />
 
-            <Button color="secondary" className="w-full mt-4">
+            <Button
+              loading={isLoading}
+              color="secondary"
+              className="w-full mt-4"
+            >
               Login
             </Button>
           </AppFrom>
         </div>
       </section>
     </>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

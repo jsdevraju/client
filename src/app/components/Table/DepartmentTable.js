@@ -1,25 +1,22 @@
-import React from "react";
-import { Button, Table } from "react-daisyui";
-import { useSelector } from "react-redux";
+import React from "react"
+import { Button, Table } from "react-daisyui"
+import { useSelector } from "react-redux"
 // import { TABLEDATA } from "../../data";
 
-const TableData = ({ employeeList }) => {
-  const user = useSelector((state) => state.user.user);
+const DepartmentTable = ({ departmentList }) => {
+  const user = useSelector((state) => state.user.user)
   return (
     <>
       <div className="w-full mt-10">
         <Table className="!w-[100%]">
           <Table.Head>
             <span>Actions</span>
-            <span>First Name</span>
-            <span>Last Name</span>
-            <span>Telephone Number</span>
-            <span>Email Address</span>
+            <span>Name</span>
             <span>Manager</span>
             <span>Status</span>
           </Table.Head>
           <Table.Body>
-            {employeeList.map((item, index) => (
+            {departmentList.map((item, index) => (
               <Table.Row key={index}>
                 <span className="flex items-center gap-4">
                   {user?.role === "ADMIN" ? (
@@ -31,11 +28,9 @@ const TableData = ({ employeeList }) => {
                     </>
                   ) : undefined}
                 </span>
-                <span>{item.firstName}</span>
-                <span>{item.lastName}</span>
-                <span>{item.telephone}</span>
-                <span>{item.email}</span>
-                <span>{item.role}</span>
+                <span>{item.name}</span>
+                <span>{item.manager.firstName + item.manager.lastName}</span>
+                
                 <span
                   className={`${
                     item.status === "active"
@@ -54,4 +49,4 @@ const TableData = ({ employeeList }) => {
   )
 }
 
-export default TableData;
+export default DepartmentTable

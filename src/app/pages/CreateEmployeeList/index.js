@@ -1,17 +1,76 @@
-import { Button } from "react-daisyui";
-import { useNavigate, useParams } from "react-router-dom";
-import AppFrom from "../../components/Form/AppForm";
-import AppFormFeilds from "../../components/Form/AppFormFeilds";
-import Navbar from "../../components/Navbar";
-import { EmployeeSchema } from "../../validation";
+import { useEffect, useState } from "react"
+import { Button } from "react-daisyui"
+import { useNavigate, useParams } from "react-router-dom"
+import AppFrom from "../../components/Form/AppForm"
+import AppFormFeilds from "../../components/Form/AppFormFeilds"
+import Navbar from "../../components/Navbar"
+import { EmployeeSchema } from "../../validation"
+import axios from "axios"
 
 const CreateEmployeeList = () => {
-  const navigate = useNavigate();
-  const { id } = useParams();
+  const navigate = useNavigate()
+  const { id } = useParams()
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [managersList, setManagersList] = useState([])
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [email, setEmail] = useState("")
+  const [telephone, setTelephone] = useState("")
+  const [manager, setManager] = useState("")
+  const [status, setStatus] = useState("")
 
-  const createEmployee = async (values) => {
-    console.log(values);
-  };
+  const createEmployee = async (e) => {
+    e.preventDefault()
+
+    const data = {
+      firstName,
+      lastName,
+      email,
+      telephone,
+      manager,
+      status,
+    }
+
+    await axios.post(
+      `${process.env.REACT_APP_PUBLIC_MAIN_PROXY}/create-employee`,
+      { ...data },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    )
+    
+    navigate("/employee-list")
+
+    
+  }
+
+  useEffect(() => {
+    setIsLoaded(true)
+  }, [])
+
+  useEffect(() => {
+    if (isLoaded === true) {
+      const fetchData = async () => {
+        try {
+          const { data } = await axios.get(
+            `${process.env.REACT_APP_PUBLIC_MAIN_PROXY}/get-managers`,
+            {
+              headers: {
+                Authorization: "Bearer " + localStorage.getItem("token"),
+              },
+            }
+          )
+          // console.log(data)
+          setManagersList(data)
+        } catch (err) {
+          console.log(err)
+        }
+      }
+      fetchData()
+    }
+  }, [isLoaded])
 
   return (
     <>
@@ -22,82 +81,94 @@ const CreateEmployeeList = () => {
             {id ? "Edit Employee" : "Create Employee"}
           </h1>
 
-          <AppFrom
-            className="flex flex-col justify-center items-center "
-            initialValues={{ email: "", password: "" }}
-            onSubmit={(values) => createEmployee(values)}
-            validationSchema={EmployeeSchema}
+          <form
+            onSubmit={createEmployee}
+            className="w-full flex flex-col items-center justify-center"
           >
-            <AppFormFeilds
-              className="app_input"
-              name="name"
-              placeholder="First Name"
-            />
-            <AppFormFeilds
-              className="app_input"
-              name="surname"
-              placeholder="Last Name"
-            />
-            <AppFormFeilds
-              className="app_input"
-              name="email"
-              placeholder="Email"
-            />
-            <AppFormFeilds
-              className="app_input"
-              name="telephone"
-              placeholder="Telephone"
-              type="number"
-            />
-            <div className="mt-4 flex flex-col justify-between w-full items-center gap-3 font-sans">
+            <div className="w-full p-3 ">
+              <lable>First Name</lable>
+              <input
+                onChange={(e) => setFirstName(e.target.value)}
+                type="text"
+                name="firstName"
+                placeholder="Your First Name"
+                className="input input-bordered w-full"
+              />
+            </div>
+
+            <div className="w-full p-3 ">
+              <lable>Last Name</lable>
+              <input
+                onChange={(e) => setLastName(e.target.value)}
+                type="text"
+                name="lastName"
+                placeholder="Your Last Name"
+                className="input input-bordered w-full"
+              />
+            </div>
+
+            <div className="w-full p-3 ">
+              <lable>Email</lable>
+              <input
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                name="email"
+                placeholder="Your email address..."
+                className="input input-bordered w-full"
+              />
+            </div>
+
+            <div className="w-full p-3 ">
+              <lable>Telephone</lable>
+              <input
+                onChange={(e) => setTelephone(e.target.value)}
+                type="number"
+                name="telephone"
+                placeholder="Your telephone number..."
+                className="input input-bordered w-full"
+              />
+            </div>
+
+            <div className="w-full p-3 ">
               <label className="font-semibold text-sm capitalize block w-full">
                 Manger
               </label>
               <select
-                defaultValue={"--Select--"}
+                onChange={(e) => setManager(e.target.value)}
+                name="manager"
                 className="select focus:outline-offset-0 select-bordered w-full"
               >
-                <option disabled defaultValue={"--Select--"}>
-                  "--Select--"
-                </option>
-                <option value="manger">Manger</option>
-                <option value="admin">Admin</option>
-                <option value="employee">Employee</option>
+                {managersList.map((item, index) => (
+                  <option key={index} value={item._id}>
+                    {item.firstName + " " + item.lastName}
+                  </option>
+                ))}
               </select>
             </div>
 
-            {/* When Edit  */}
-            {id && (
-              <div className="mt-4 flex flex-col justify-between w-full items-center gap-3 font-sans">
-                <label className="font-semibold text-sm capitalize block w-full">
-                  Status
-                </label>
-                <select
-                  defaultValue={"--Select--"}
-                  className="select focus:outline-offset-0 select-bordered w-full"
-                >
-                  <option disabled defaultValue={"--Select--"}>
-                    "--Select--"
-                  </option>
-                  <option value="active">Active</option>
-                  <option value="deactivate">Deactivate</option>
-                </select>
-              </div>
-            )}
-
-            <div className="flex justify-end items-center gap-4 mt-4">
-              <Button color="success" className="text-white">
-                Save
-              </Button>
-              <Button color="info" className="text-white">
-                Cancel
-              </Button>
+            <div className="w-full p-3 ">
+              <label className="font-semibold text-sm capitalize block w-full">
+                Status
+              </label>
+              <select
+                disabled
+                onChange={(e) => setStatus(e.target.value)}
+                name="status"
+                className="select focus:outline-offset-0 select-bordered w-full"
+              >
+                <option value="Active">Active</option>
+                <option value="inActive">Deactive</option>
+              </select>
             </div>
-          </AppFrom>
+
+            <div className="w-full p-3 ">
+              <Button type="submit">Submit</Button>
+            </div>
+          </form>
         </div>
       </section>
     </>
-  );
-};
+  )
+}
 
-export default CreateEmployeeList;
+export default CreateEmployeeList

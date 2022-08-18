@@ -18,6 +18,7 @@ export default function AppFormFeilds({
       <input
         onBlur={() => setFieldTouched(name)}
         onChange={handleChange(name)}
+        name={name}
         type={showPassword ? 'password' : 'text'}
         value={values[name]}
         id={name}
