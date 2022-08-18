@@ -23,3 +23,12 @@
     @apply transition duration-300;
   }
 }
+
+.table {
+  display: table;
+  width: 100%;
+}
+
+.table thead th{
+  background-color: #e0e7ff;
+}
