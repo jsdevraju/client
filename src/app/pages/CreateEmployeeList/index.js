@@ -1,17 +1,46 @@
-import { Button } from "react-daisyui";
-import { useNavigate, useParams } from "react-router-dom";
-import AppFrom from "../../components/Form/AppForm";
-import AppFormFeilds from "../../components/Form/AppFormFeilds";
-import Navbar from "../../components/Navbar";
-import { EmployeeSchema } from "../../validation";
-
+import { useEffect, useState } from "react"
+import { Button } from "react-daisyui"
+import { useNavigate, useParams } from "react-router-dom"
+import AppFrom from "../../components/Form/AppForm"
+import AppFormFeilds from "../../components/Form/AppFormFeilds"
+import Navbar from "../../components/Navbar"
+import { EmployeeSchema } from "../../validation"
+import axios from "axios"
 const CreateEmployeeList = () => {
-  const navigate = useNavigate();
-  const { id } = useParams();
+  const navigate = useNavigate()
+  const { id } = useParams()
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [managersList, setManagersList] = useState([])
 
   const createEmployee = async (values) => {
-    console.log(values);
-  };
+    console.log(values)
+  }
+
+  useEffect(() => {
+    setIsLoaded(true)
+  }, [])
+
+  useEffect(() => {
+    if (isLoaded === true) {
+      const fetchData = async () => {
+        try {
+          const { data } = await axios.get(
+            `${process.env.REACT_APP_PUBLIC_MAIN_PROXY}/get-managers`,
+            {
+              headers: {
+                Authorization: "Bearer " + localStorage.getItem("token"),
+              },
+            }
+          )
+          // console.log(data)
+          setManagersList(data)
+        } catch (err) {
+          console.log(err)
+        }
+      }
+      fetchData()
+    }
+  }, [isLoaded])
 
   return (
     <>
@@ -24,18 +53,25 @@ const CreateEmployeeList = () => {
 
           <AppFrom
             className="flex flex-col justify-center items-center "
-            initialValues={{ email: "", password: "" }}
-            onSubmit={(values) => createEmployee(values)}
+            initialValues={{
+              firstName: "",
+              lastName: "",
+              email: "",
+              telephone: "",
+              manager: "",
+              status: "",
+            }}
+            onSubmit={createEmployee}
             validationSchema={EmployeeSchema}
           >
             <AppFormFeilds
               className="app_input"
-              name="name"
+              name="firstName"
               placeholder="First Name"
             />
             <AppFormFeilds
               className="app_input"
-              name="surname"
+              name="lastName"
               placeholder="Last Name"
             />
             <AppFormFeilds
@@ -54,15 +90,15 @@ const CreateEmployeeList = () => {
                 Manger
               </label>
               <select
+                name="manager"
                 defaultValue={"--Select--"}
                 className="select focus:outline-offset-0 select-bordered w-full"
               >
-                <option disabled defaultValue={"--Select--"}>
-                  "--Select--"
-                </option>
-                <option value="manger">Manger</option>
-                <option value="admin">Admin</option>
-                <option value="employee">Employee</option>
+                {managersList.map((item, index) => (
+                  <option key={index} value={item._id}>
+                    {item.firstName + " " + item.lastName}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -73,6 +109,7 @@ const CreateEmployeeList = () => {
                   Status
                 </label>
                 <select
+                  name="status"
                   defaultValue={"--Select--"}
                   className="select focus:outline-offset-0 select-bordered w-full"
                 >
@@ -86,18 +123,15 @@ const CreateEmployeeList = () => {
             )}
 
             <div className="flex justify-end items-center gap-4 mt-4">
-              <Button color="success" className="text-white">
+              <Button type="submit" color="success" className="text-white">
                 Save
-              </Button>
-              <Button color="info" className="text-white">
-                Cancel
               </Button>
             </div>
           </AppFrom>
         </div>
       </section>
     </>
-  );
-};
+  )
+}
 
-export default CreateEmployeeList;
+export default CreateEmployeeList

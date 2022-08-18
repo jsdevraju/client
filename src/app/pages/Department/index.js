@@ -1,13 +1,47 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { Button, Input, Pagination } from "react-daisyui";
 import { FaFilter } from "react-icons/fa";
 import { GoSearch } from "react-icons/go";
 import Navbar from "../../components/Navbar";
 import SelectFilter from "../../components/SelectFIlter";
 import TableData from "../../components/Table";
+import DepartmentTable from "../../components/Table/DepartmentTable";
 import { PAGE, SELECT } from "../../data";
 
 const Department = () => {
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  const [departmentList, setDepartmentList] = useState([])
+
+useEffect(() => {
+  setIsLoaded(true)
+}, [])
+
+useEffect(() => {
+  if (isLoaded === true) {
+    const fetchData = async () => {
+      try {
+        const { data } = await axios.get(
+          `${process.env.REACT_APP_PUBLIC_MAIN_PROXY}/get-departments`,
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        )
+        // console.log(data.allDepartments)
+
+        setDepartmentList(data.allDepartments)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    fetchData()
+  }
+}, [isLoaded])
+
+
   return (
     <>
       <Navbar />
@@ -49,7 +83,7 @@ const Department = () => {
             </div>
           </div>
           {/* Table Data */}
-          <TableData />
+          <DepartmentTable departmentList={departmentList} />
 
           {/* Pagination */}
           <Pagination className="mt-10">
@@ -61,7 +95,7 @@ const Department = () => {
         </div>
       </section>
     </>
-  );
+  )
 };
 
 export default Department;
